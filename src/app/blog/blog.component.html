@@ -1,0 +1,115 @@
+<nav class="navbar navbar-dark bg-dark mr-auto">
+  <h3 style="color: white;">Angular blog</h3>
+  <!-- група кнопок  Sign in i Sign up --------------------------------------------------------------->
+  <div *ngIf="btnSignStatus" class="btn-group">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="signIn(template)">Sign in</button>
+    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="signUp(template)">Sign up</button>
+  </div>
+  <!-- --------------------------------------------------------------------------------------------- -->
+  <!-- група кнопок Add post, User, Sign out ------------------------------------------------------- -->
+  <div *ngIf="!btnSignStatus" class="btn-group">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="addPost(template)">Add post</button>
+    <button type="button" class="btn btn-warning">{{currentUserName}}</button>
+    <button class="btn btn-outline-warning my-2 my-sm-0" type="submit" (click)="signOut()">Sign out</button>
+  </div>
+</nav>
+<!-- --------------------------------------------------------------------------------------------- -->
+<!-- створення нових постів  ------------------------------------------------------------------------>
+<div *ngFor="let post of blogPosts; let i=index" class="container border mt-3 ml-5 col-11 row"
+  style="border-radius: 5px;">
+
+  <div class="container-fluid p-3 col-9 ">
+    <h4>{{post.topic}}</h4>
+    <p style="color: rgb(104, 103, 103);">posted by: {{post.postedBy}}</p>
+    <div style="overflow-wrap: break-word;">{{post.message}}</div>
+  </div>
+
+  <div class="container col-2 d-flex flex-column justify-content-around align-content-around">
+    <!-- іконку для годинника додаю без пайпа -->
+    <span class=""><i class="uil uil-clock" style="font-size: 19px;"></i>{{post.date | date:'HH:mm, dd.MM.yyyy'}}</span>
+    <!-- умову на відображення кнопок edit, delete роблю тут в *ngIf -->
+    <div *ngIf="(post.postedBy == currentUserName || currentUserName == 'admin')" class="btn-group ">
+      <button type="button" class="btn btn-warning" (click)="editBlogPost(template,post)">edit</button>
+      <button type="button" class="btn btn-danger" (click)="deleteBlogPost(post)">delete</button>
+    </div>
+  </div>
+</div>
+<!-- -------------------------------------------------------------------------------------------- -->
+<!-- модалка ------------------------------------------------------------------------------------ -->
+<ng-template #template>
+  <!-- заголовок один, але title міняється-->
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{modalTitle}}</h4>
+    <!-- тут відключаю закриття модалки на крестик, буде на кнопку Close -->
+    <button type="button" class="close pull-right" aria-label="Close">
+      <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()"> -->
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- вмістиме модалки різне, є три різних форми -->
+  <!-- 1. форма для Sign in зі своїми кнопками Close, Submit ------------------------------------------ -->
+  <div *ngIf="!addPostStatus && !formNameStatus" class="container">
+    <form>
+      <div class="form-group">
+        <label for="log-email">Email:</label>
+        <input type="email" class="form-control" id="log-email" [(ngModel)]="logEmail" name="logEmail">
+      </div>
+      <div class="form-group">
+        <label for="pswd">Password:</label>
+        <input type="password" class="form-control" id="pswd" [(ngModel)]="logPassword" name="logPassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)=" submitLoginedUser()">Submit</button>
+      </div>
+    </form>
+  </div>
+  <!-- ------------------------------------------------------------------------------------------------ -->
+  <!-- 2. форма для Sign up зі своїми кнопками Close, Submit------------------------------------------- -->
+  <div *ngIf="!addPostStatus && formNameStatus" class="container">
+    <form>
+      <div class="form-group">
+        <label for="user">Username:</label>
+        <input type="email" class="form-control" id="user" [(ngModel)]="bUserName" name="bUserName">
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" [(ngModel)]="bEmail" name="bEmail">
+      </div>
+      <div class="form-group">
+        <label for="pwd">Password:</label>
+        <input type="password" class="form-control" id="pwd" [(ngModel)]="bPassword" name="bPassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-primary" (click)=" addSubmitedUser()">Submit</button>
+      </div>
+    </form>
+  </div>
+  <!-- ----------------------------------------------------------------------------------------------- -->
+  <!-- 3. Форма для додавання поста ------------------------------------------------------------------ -->
+  <div *ngIf="addPostStatus" class="container-fluid">
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="bTopic">Title: </label>
+          <input [(ngModel)]="bTopic" name="bTopic" type="text" class="form-control" id="bTopic">
+        </div>
+        <div class="form-group">
+          <label for="bMessage">Text: </label>
+          <textarea [(ngModel)]="bMessage" name="bMessage" class="form-control" style="height: 200px;"
+            id="bMessage"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeBlogPostForm()">Close</button>
+          <button type="button" class="btn btn-success" (click)="addBlogPost()"
+            [textContent]="!editStatus ? 'Post' : 'Edit Post'"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ---------------------------------------------------------------------------------------- -->
+
+
+</ng-template>
