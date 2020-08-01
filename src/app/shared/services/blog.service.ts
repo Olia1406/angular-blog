@@ -35,12 +35,14 @@ private arrUsers: Array<IUser> = [{
     this.arrUsers.push(user);
   }
   deleteBlogPost(id: number): void {
-    const index = this.arrBlogPost.findIndex(d => d.id === id);
+    const index = this.arrBlogPost.findIndex(b => b.id === id);
     this.arrBlogPost.splice(index, 1);
   }
-  updateBlogPost(discount: IBlog): void {
-    const index = this.arrBlogPost.findIndex(d => d.id === discount.id);
-    this.arrBlogPost.splice(index, 1, discount);
+  updateBlogPost(post: IBlog): void {
+    const index = this.arrBlogPost.findIndex(b => b.id === post.id);
+    post.date = this.arrBlogPost[index].date;
+    post.postedBy = this.arrBlogPost[index].postedBy;
+    this.arrBlogPost.splice(index, 1, post);
   }
 
 

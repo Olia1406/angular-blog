@@ -28,9 +28,9 @@ export class BlogComponent implements OnInit {
 
   blogPosts: Array<IBlog> = [];
   bID: number;
-  bPostedBy: string;
+  bPostedBy:string;
   bTopic = '';
-  bDate: any;
+  bDate ='';
   bMessage = '';
   editStatus = false;
   // для зміни видимості груп кнопок у навбарі
@@ -71,7 +71,6 @@ export class BlogComponent implements OnInit {
       this.modalRef.hide();
       this.btnSignStatus = false;
       this.addPostStatus = true;
-
     }
     else {
       alert('Such user already exist or maybe you forgot to fill formfields.');
@@ -99,7 +98,6 @@ export class BlogComponent implements OnInit {
   }
   // додає або редагує пост в залежності від editStatus
   addBlogPost(): void {
-    this.bDate = new Date();
     this.bPostedBy = this.currentUserName;
     const post = new Blog(this.bID, this.bPostedBy, this.bTopic, this.bDate, this.bMessage);
     if (post.topic !== '' && post.message !== '') {
@@ -107,16 +105,17 @@ export class BlogComponent implements OnInit {
         if (this.blogPosts.length > 0) {
           post.id = this.blogPosts.slice(-1)[0].id + 1;
         }
+        post.date = new Date().toString();
         this.bService.addBlogPost(post);
       }
-      else {
+      else { 
         this.bService.updateBlogPost(post);
         this.editStatus = false;
       }
       this.modalRef.hide();
       this.resetForm();
     }
-    else if (post.topic == '' || post.message == '') { alert('Pleace fill all fields!') }
+    else if (post.topic == '' || post.message == '') alert('Pleace fill all fields!');
   }
   closeBlogPostForm() {
     this.modalRef.hide();
